@@ -23,11 +23,11 @@ class MongoDBPipeline(object):
         db = connection[settings['MONGODB_DB']]
         self.collection = db[settings['MONGODB_COLLECTION']]
 
-    def process_item(self, item):
+    def process_item(self, item, spider):
         for data in item:
             if not data:
                 raise DropItem("Missing data!")
-        self.collection.update({'url': item['url']}, dict(item), upsert=True)
+        self.collection.insert_one({'url': item['url'], 'title': item['title']}, dict(item))
         return item
         # log.msg("Question added to MongoDB database!",
         #         level=log.DEBUG, spider=spider)
